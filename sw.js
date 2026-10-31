@@ -1,5 +1,5 @@
 // 地理マスプリテスト：オフラインでも開けるようにするサービスワーカー
-const CACHE = 'chiriMasupuri-202610311105';
+const CACHE = 'chiriMasupuri-202610311219';
 const SHELL = ['./chiri-masupuri.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './icon-maskable-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {

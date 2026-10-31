@@ -1,0 +1,28 @@
+{
+  "name": "地マス テスト",
+  "short_name": "地マス テスト",
+  "start_url": "./chiri-masupuri.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfefc",
+  "theme_color": "#1f6e47",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

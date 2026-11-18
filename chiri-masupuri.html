@@ -211,6 +211,21 @@
   .sort-seg button{font:inherit; font-size:13px; font-weight:700; padding:6px 14px; border:none; background:#e6f2fd; color:#2f6d9e; cursor:pointer;}
   .sort-seg button + button{border-left:1.5px solid #9cc7ef;}
   .sort-seg button[aria-pressed="true"]{background:var(--accent); color:#fff;}
+  /* トップ：まちがいリスト（本日／すべて） */
+  .note-menu{margin-top:10px; padding:8px 10px 10px; border-radius:14px; background:#fff; border:1.5px solid var(--border-soft);}
+  .note-menu-title{margin:0 0 6px; text-align:center; font-family:'Zen Maru Gothic',sans-serif; font-weight:900; font-size:14px; color:var(--accent);}
+  .note-menu-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .nm-btn{font:inherit; cursor:pointer; border-radius:12px; padding:8px 4px; line-height:1.25; border:2px solid; display:flex; flex-direction:column; align-items:center; gap:1px;}
+  .nm-btn b{font-size:17px; font-weight:900;}
+  .nm-btn small{font-size:11px; font-weight:700;}
+  .nm-btn .nm-ic{font-style:normal; font-size:20px; line-height:1;}
+  .nm-btn small{font-variant-numeric:tabular-nums;}
+  .nm-today{background:#fff3e3; border-color:#f08c2e; color:#c25e00;}
+  .nm-all{background:#eaf3fc; border-color:#4a8fd4; color:#24639f;}
+  .note-tabs button.tab-today{border-color:#f08c2e; background:#fff3e3; color:#c25e00;}
+  .note-tabs button.tab-all{border-color:#4a8fd4; background:#eaf3fc; color:#24639f;}
+  .note-tabs button.tab-today[aria-selected="true"]{background:#f08c2e; border-color:#f08c2e; color:#fff;}
+  .note-tabs button.tab-all[aria-selected="true"]{background:#4a8fd4; border-color:#4a8fd4; color:#fff;}
   /* 今日／これまでのタブ */
   .note-tabs{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 4px;}
   .note-tabs button{font:inherit; font-size:15px; font-weight:900; padding:10px 8px; border-radius:12px; cursor:pointer;
@@ -488,9 +503,12 @@
       </div>
       <div class="pool-info" id="poolInfo"></div>
       <button type="button" class="make-btn round" id="btnGo">テスト開始！</button>
-      <div class="side-row two">
-        <button type="button" class="report-open note-open" id="btnNote">📒 まちがいリスト<span id="todayCount"></span></button>
-        <button type="button" class="report-open note-open" id="btnNoteAll">📚 これまでリスト<span id="noteCount"></span></button>
+      <div class="note-menu">
+        <p class="note-menu-title">まちがいリスト</p>
+        <div class="note-menu-btns">
+          <button type="button" class="nm-btn nm-today" id="btnNote"><b>本日</b><small id="todayCount"></small></button>
+          <button type="button" class="nm-btn nm-all" id="btnNoteAll"><b>すべて</b><small id="noteCount"></small></button>
+        </div>
       </div>
       <div class="side-row mini">
         <button type="button" class="install-open" id="btnInstall" hidden>📲 ホーム画面に追加</button>
@@ -563,10 +581,10 @@
 <section id="screen-note" hidden>
   <div class="shell wide">
     <div class="card">
-      <h2 class="rep-title" id="noteTitle">📒 まちがいリスト</h2>
+      <h2 class="rep-title" id="noteTitle">まちがいリスト</h2>
       <div class="note-tabs" role="tablist" aria-label="リストの切りかえ">
-        <button type="button" role="tab" id="tabToday" data-tab="today" aria-selected="true">まちがいリスト（今日）<small id="tabTodayN"></small></button>
-        <button type="button" role="tab" id="tabAll" data-tab="all" aria-selected="false">これまでリスト<small id="tabAllN"></small></button>
+        <button type="button" role="tab" id="tabToday" data-tab="today" aria-selected="true" class="tab-today">本日<small id="tabTodayN"></small></button>
+        <button type="button" role="tab" id="tabAll" data-tab="all" aria-selected="false" class="tab-all">すべて<small id="tabAllN"></small></button>
       </div>
       <p class="rep-hint" id="noteHint"></p>
       <div id="noteSummary"></div>
@@ -963,8 +981,8 @@ function applyNote(){
 }
 function updNoteCount(){
   const n = Object.keys(loadNote()).filter(k => BY_KEY[k]).length;
-  $('noteCount').textContent = n ? `（${n}問）` : '';
-  const tn = todayItems().length; $('todayCount').textContent = tn ? `（今日${tn}問）` : '（今日）';
+  $('noteCount').textContent = `これまで ${n}問`;
+  const tn = todayItems().length; $('todayCount').textContent = `今日 ${tn}問`;
   paintEraHeat();
 }
 // 単元名の色：水色（ミスなし）→赤（自分のまちがいリストのミス回数が多い単元）
@@ -1039,14 +1057,14 @@ function openNote(keepScroll){
   const allItems = noteItems(), tItems = todayItems();
   if(!noteTab) noteTab = tItems.length ? 'today' : 'all';
   const isToday = noteTab === 'today';
-  $('noteTitle').textContent = isToday ? '📒 まちがいリスト（今日の分）' : '📚 これまでリスト';
-  $('tabTodayN').textContent = `（${tItems.length}問）`;
-  $('tabAllN').textContent = `（${allItems.length}問）`;
+  $('noteTitle').textContent = isToday ? 'まちがいリスト（本日）' : 'まちがいリスト（すべて）';
+  $('tabTodayN').textContent = `今日 ${tItems.length}問`;
+  $('tabAllN').textContent = `これまで ${allItems.length}問`;
   ['tabToday', 'tabAll'].forEach(id => $(id).setAttribute('aria-selected', $(id).dataset.tab === noteTab));
   $('noteHint').textContent = isToday
     ? '今日のテストで✓をつけた問題です。まちがえた回数の多い順にならびます。'
     : 'これまでに✓をつけた問題が、この端末に記録されています。まちがえた回数ランキング順にならびます。3回続けて正解したら「覚えた！」で消しましょう。';
-  $('noteTestBtn').textContent = isToday ? 'まちがいリストからテスト' : 'これまでリストからテスト';
+  $('noteTestBtn').textContent = isToday ? '本日のまちがいからテスト' : 'すべてのまちがいからテスト';
   $('noteClearBtn').parentNode.hidden = isToday;
   const items = (isToday ? tItems : allItems);
   // ランキング（同じ回数は同じ順位）
@@ -1156,7 +1174,7 @@ $('noteTestBtn').addEventListener('click', () => {
   const count = +document.querySelector('input[name=qCount]:checked').value;
   const pick = shuffle(items.slice(0, count).map(x => x.m));
   const eras = Array.from(new Set(pick.map(m => m.era))).sort((a, b) => a - b);
-  startSheet({pool: pick, eras, range: noteTab === 'today' ? '今日のまちがいリスト' : 'これまでのまちがいリスト', count, limit: +document.querySelector('input[name=tLimit]:checked').value, fromNote: true}, pick);
+  startSheet({pool: pick, eras, range: noteTab === 'today' ? '本日のまちがいリスト' : 'すべてのまちがいリスト', count, limit: +document.querySelector('input[name=tLimit]:checked').value, fromNote: true}, pick);
 });
 $('noteClearBtn').addEventListener('click', () => {
   const b = $('noteClearBtn');
